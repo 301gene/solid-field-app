@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <link rel="shortcut icon" type="image/png" href="favicon.png"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <style>
+    .text-area {margin: 3%;}
+    button {margin-left: 5%; padding: 7px; font-size: large; margin-top: 2%;}
+    textarea {width: 100%; white-space: pre-wrap;}
+    @media screen and (min-width:766px) {
+      .refresh {margin-bottom: 10px;}
+    }
+    div.editable {
+      width: 100%;
+      height: 200px;
+      border: 1px solid #ccc;
+      padding: 5px;
+      overflow: scroll;
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+    #resultPlaceholder {
+      color: #555;
+    }
+  </style>
+  <title>Make Solid Easy</title>
+</head>
+<body>
+  <div class="text-area" >
+    <textarea name="" placeholder="paste text here..." id="input" cols="30" rows="10" class="col-md-12"></textarea>
+  </div>
+  <div class="col-sm-12 col-md-6">
+    <button type="button" class="btn-success" onclick="myFunction()">Make inventory easy</button>
+  </div>
+  <div class="col-sm-12 col-md-6">
+    <button type="button" class="btn-warning" onclick="asftList()">Inventory for ASFT</button>
+  </div>
+  <div class="col-sm-12 col-md-6">
+    <button type="button" class="btn-info" onclick="myInventory()">Inventory for clients</button>
+  </div>
+  <div class="col-sm-12 col-md-6">
+    <button type="button" class="btn-default refresh" onclick="refresh_page()">Refresh Form</button>
+  </div>
+  <div class="text-area">
+    <div contenteditable="true" class="editable col-md-12" id="result" >
+      <span id="resultPlaceholder">Magic!!!</span>
+    </div>
+  </div>
+
+    <!--<textarea name="" placeholder="Magic!" id="result" cols="30" rows="10" class="col-md-12"></textarea>-->
+
+<script>
+
+  //  ****** Inventory extraction function ******
+  function myFunction() {
+    var str = document.getElementById("input").value;
+    var inventory = "";
+
+    // A RegExp object to find the customer's phone number
+    var regex = /Phone: (.*)/g;
+
+    str.replace(regex, function(match, phone) {
+      // add phone number to the result string
+      inventory += phone + "<br>";
+    });
+
+    // extract flights at pick-up
+    var p_u_flights;
+    // A RegExp object to find the number of flights at the pick up
+    regex = /Flights at pickup:\s+(.*)/g;
+
+    // extract the pick up flight details (find a match and replace with an abbreviation).
+    str.replace(regex, function(match, flight) {
+      switch(flight) {
+          case "Elevator (no stairs)":
+            p_u_flights = "E";
+            break;
+          case "Basement (1 flight)":
+            p_u_flights = "1";
+            break;
+          case "Stoop, no stairs.":
+            p_u_flights = "0.5";
+            break;
+          case "Stoop and 1 flight of stairs":
+            p_u_flights = "1.5";
+            break;
+          case "Stoop and 2 flights of stairs":
+            p_u_flights = "2.5";
+            break;
+          case "Stoop and 3 flights of stairs":
+            p_u_flights = "3.5";
+            break;
+          case "Stoop and 4 flights of stairs":
+            p_u_flights = "4.5";
+            break;
+          case "Stoop and 5 flights of stairs":
+            p_u_flights = "5.5";
+            break;
+          case "Stoop and 6 flights of stairs":
+            p_u_flights = "6.5";
+            break;
+          case "Stoop and 7 flights of stairs":
+            p_u_flights = "7.5";
+            break;
+          case "Ground":
+            p_u_flights = "G";
+            break;
+          case "1 Flight of Stairs":
+            p_u_flights = "1";
+            break;
+          case "2 Flights of Stairs":
+            p_u_flights = "2";
+            break;
+          case "3 Flights of Stairs":
+            p_u_flights = "3";
+            break;
+          case "4 Flights of Stairs":
+            p_u_flights = "4";
+            break;
+          case "5 Flights of Stairs":
+            p_u_flights = "5";
+            break;
+          case "6 Flights of Stairs":
+            p_u_flights = "6";
+            break;
+          case "7+ Flights of Stairs":
+            p_u_flights = "7";
+            break;
+          default:
+            p_u_flights = "";
+      }
+    });
+
+    // add pick-up flight to the result string
+    inventory += p_u_flights + "-";
+
+    // extract flights at drop-off
+    var d_o_flights;
+    // A RegExp object to find the number of flights at the drop off
+    regex = /Flights at dropoff:\s+(.*)/g;
+
+    // extract the drop-off flight details (find a match and replace with an abbreviation).
+    str.replace(regex, function(match, flight) {
+      switch(flight) {
+          case "Elevator (no stairs)":
+            d_o_flights = "E";
+            break;
+          case "Basement (1 flight)":
+            d_o_flights = "1";
+            break;
+          case "Stoop, no stairs.":
+            d_o_flights = "0.5";
+            break;
+          case "Stoop and 1 flight of stairs":
+            d_o_flights = "1.5";
+            break;
+          case "Stoop and 2 flights of stairs":
+            d_o_flights = "2.5";
+            break;
+          case "Stoop and 3 flights of stairs":
+            d_o_flights = "3.5";
+            break;
+          case "Stoop and 4 flights of stairs":
+            d_o_flights = "4.5";
+            break;
+          case "Stoop and 5 flights of stairs":
+            d_o_flights = "5.5";
+            break;
+          case "Stoop and 6 flights of stairs":
+            d_o_flights = "6.5";
+            break;
+          case "Stoop and 7 flights of stairs":
+            d_o_flights = "7.5";
+            break;
+          case "Ground":
+            d_o_flights = "G";
+            break;
+          case "1 Flight of Stairs":
+            d_o_flights = "1";
+            break;
+          case "2 Flights of Stairs":
+            d_o_flights = "2";
+            break;
+          case "3 Flights of Stairs":
+            d_o_flights = "3";
+            break;
+          case "4 Flights of Stairs":
+            d_o_flights = "4";
+            break;
+          case "5 Flights of Stairs":
+            d_o_flights = "5";
+            break;
+          case "6 Flights of Stairs":
+            d_o_flights = "6";
+            break;
+          case "7+ Flights of Stairs":
+            d_o_flights = "7";
+            break;
+          default:
+            d_o_flights = "";
+      }
+    });
+
+    // add drop-off flight to the result string
+    inventory += d_o_flights + "<br>";
+
+    // extract cubic feet
+    regex = /Cubic feet:\s+(\d+.\d\d)/g;
+
+    str.replace(regex, function(match, cf) {
+      // add cf to the result string (round to the nearest 5, remove decimals).
+      inventory += Math.round((cf%5<3 ? (cf%5===0 ? cf : Math.floor(cf/5)*5) : Math.ceil(cf/5)*5)) + "cf: ";
+    });
+
+    // A RegExp object to find the number of items and item description
+    regex = /([0-9]*)\s--------\s(.*)/g;
+    var matches = [];
+
+    /* Look through the entire document and, based on the regex pattern matches,
+    create and add objects (each with 2 attributes: quantity and item name) to array "matches".*/
+    str.replace(regex, function(match, qty, item_name) {
+      matches.push({
+        qty: qty,
+        item_name: item_name
+      });
+    });
+
+    // replace each item name in the array "matches" with abbreviations that will be used in texts for crews
+    for (var i=0; i < matches.length; i++) {
+      var item_name = "";
+
+      if (matches[i].qty > 0) {
+        switch(matches[i].item_name) {
+          case "Twin Mattresses (20 cf)":
+            item_name = "twin matt";
+            break;
+          case "Twin Box Springs (20 cf)":
+            item_name = "twin box";
+            break;
+          case "Full Mattresses (25 cf)":
+            item_name = "full matt";
+            break;
+          case "Full Box Springs (25 cf)":
+            item_name = "full box";
+            break;
+          case "Queen Mattresses (30 cf)":
+            item_name = "queen matt";
+            break;
+          case "Queen Box Springs (30 cf)":
+            item_name = "queen box";
+            break;
+          case "King Mattresses (35 cf)":
+            item_name = "king matt";
+            break;
+          case "King Box Springs (35 cf)":
+            item_name = "king box";
+            break;
+          case "Folding metal frames (10 per)":
+            item_name = "fld frm";
+            break;
+          case "Folding frames with headboards (30 cf)":
+            item_name = "fld frm w hdbd";
+            break;
+          case "Full bedframe (no storage drawers) (30 per)":
+            item_name = "full frm";
+            break;
+          case "Storage Bedframes (40 per)":
+            item_name = "storage frm";
+            break;
+          case "Nightstand (5 cf)":
+            item_name = "ntstd";
+            break;
+          case "Medium dresser (3'x5') (30 cf)":
+            item_name = "med drsr";
+            break;
+          case "Large dresser (6'x4') (45 cf)":
+            item_name = "lg drsr";
+            break;
+          case "Large dresser with mirror (5’x4’) (45 cf)":
+            item_name = "lg drsr w mirr";
+            break;
+          case "Armoire/ Wardrobe (3'x6') (40 cf)":
+            item_name = "armoire 3x6";
+            break;
+          case "Armoire/ Wardrobe (5'x7') (60 cf)":
+            item_name = "armoire 5x7";
+            break;
+          case "Trunk (10 cf)":
+            item_name = "trunk";
+            break;
+          case "Vanity (15 cf)":
+            item_name = "vanity";
+            break;
+          case "Crib (15 cf)":
+            item_name = "crib";
+            break;
+          case "Full length mirror (3'x6') (10 cf)":
+            item_name = "full mirr";
+            break;
+          case "Shoe racks (5 cf)":
+            item_name = "shoe rk";
+            break;
+          case "Hamper (5 cf)":
+            item_name = "hmpr";
+            break;
+          case "Couch (3 seat) (60 cf)":
+            item_name = "couch";
+            break;
+          case "Loveseat (2 seat) (35 cf)":
+            item_name = "loveseat";
+            break;
+          case "Sleeper Sofa (with fold-out bed) (70 cf)":
+            item_name = "sleeper sofa";
+            break;
+          case "Sectional couch (80 cf)":
+            item_name = "sectnl couch";
+            break;
+          case "Sofa chair/ Recliner (25 cf)":
+            item_name = "sofa chr";
+            break;
+          case "Ottoman (2'x2') (10 cf)":
+            item_name = "ottomn";
+            break;
+          case "Arm chair (12 cf)":
+            item_name = "arm chr";
+            break;
+          case "Coffee table (10 cf)":
+            item_name = "coff tbl";
+            break;
+          case "Large Coffee table (20 cf)":
+            item_name = "lg coff tbl";
+            break;
+          case "Glass Coffee table (15 cf)":
+            item_name = "gls coff tbl";
+            break;
+          case "Console table/ Side table (10 cf)":
+            item_name = "sd tbl";
+            break;
+          case "End table (1'x2') (5 cf)":
+            item_name = "end tbl";
+            break;
+          case "End table (2'x3') (10 cf)":
+            item_name = "lg end tbl";
+            break;
+          case "TV stand (10 cf)":
+            item_name = "tv std";
+            break;
+          case "Glass TV stand (20 cf)":
+            item_name = "gls tv std";
+            break;
+          case "TV Console/Credenza (30 cf)":
+            item_name = "tv console";
+            break;
+          case "Entertainment Center (5'x5') (80 cf)":
+            item_name = "ent ctr 5x5";
+            break;
+          case '< 44" Flatscreen TV (10 cf)':
+            item_name = "tv";
+            break;
+          case '44"+ Flatscreen TV (20 cf)':
+            item_name = "lg tv";
+            break;
+          case "Bookcase (3'x3') (10 cf)":
+            item_name = "sm bkcs";
+            break;
+          case "Bookcase (3'x6') (20 cf)":
+            item_name = "lg bkcs";
+            break;
+          case "XL bookcase (40 cf)":
+            item_name = "xl bkcs";
+            break;
+          case "Writing desk (15 cf)":
+            item_name = "sm desk";
+            break;
+          case "Large desk (5'x3') (25 cf)":
+            item_name = "lg desk";
+            break;
+          case "Office chair (15 cf)":
+            item_name = "ofc chr";
+            break;
+          case "Dining table (2-4 seat) (25 cf)":
+            item_name = "din tbl";
+            break;
+          case "Dining table (6-8 seat) (40 cf)":
+            item_name = "lg din tbl";
+            break;
+          case "Dining chair (6 cf)":
+            item_name = "din chr";
+            break;
+          case "Stool (3 cf)":
+            item_name = "stool";
+            break;
+          case "Buffet/Side board (35 cf)":
+            item_name = "buffet";
+            break;
+          case "China cabinet (3'x5') (40 cf)":
+            item_name = "china cab 3x5";
+            break;
+          case "Small Pictures/Paintings (1'x1') (1 cf)":
+            item_name = "sm pic";
+            break;
+          case "Medium Pictures/Paintings (2'x3') (3 cf)":
+            item_name = "med pic";
+            break;
+          case "Large Pictures/Paintings (3'x4'+) (5 cf)":
+            item_name = "lg pic";
+            break;
+          case "Floor lamp (10 cf)":
+            item_name = "fl lmp";
+            break;
+          case "Large floor lamp (15 cf)":
+            item_name = "lg fl lmp";
+            break;
+          case "Table lamp (5 cf)":
+            item_name = "tbl lmp";
+            break;
+          case "Rug (4' long) (5 cf)":
+            item_name = "rug";
+            break;
+          case "Rug (7' long) (10 cf)":
+            item_name = "lg rug";
+            break;
+          case "Refrigerator (50 cf)":
+            item_name = "refrigerator";
+            break;
+          case "Wine or mini fridge (10 cf)":
+            item_name = "mini fridge";
+            break;
+          case "Stove (30 cf)":
+            item_name = "stove";
+            break;
+          case "Wire Shelving unit (2' x 5') (20 cf)":
+            item_name = "wire shlvg 2x5";
+            break;
+          case "Wire Shelving unit (4' x 5') (30 cf)":
+            item_name = "wire shlvg 4x5";
+            break;
+          case "Kitchen cart / Butcher block (15 cf)":
+            item_name = "kitch cart";
+            break;
+          case "Bench (15 cf)":
+            item_name = "bench";
+            break;
+          case "Standing/Box Fan (5 cf)":
+            item_name = "fan";
+            break;
+          case "Window A.C. unit (8 cf)":
+            item_name = "ac";
+            break;
+          case "Bike (10 cf)":
+            item_name = "bike";
+            break;
+          case "Potted plants (5 cf)":
+            item_name = "plnt";
+            break;
+          case "Large plants (15 cf)":
+            item_name = "lg plnt";
+            break;
+          case "Outdoor table, seats 4 (25 cf)":
+            item_name = "outdr tbl";
+            break;
+          case "Folding table (8 cf)":
+            item_name = "fld tbl";
+            break;
+          case "Single chair (5 cf)":
+            item_name = "chr";
+            break;
+          case "Folding chair (2 cf)":
+            item_name = "fld chr";
+            break;
+          case "File cabinet (2 drawer) (5 cf)":
+            item_name = "file cab";
+            break;
+          case "File cabinet (4 drawer) (10 cf)":
+            item_name = "lg file cab";
+            break;
+          case "Plastic storage cabinet (7 cf)":
+            item_name = "plstc cab";
+            break;
+          case "Wine rack (7 cf)":
+            item_name = "wine rk";
+            break;
+          case "Coat rack (5 cf)":
+            item_name = "coat rk";
+            break;
+          case "BBQ Grill (10 cf)":
+            item_name = "grill";
+            break;
+          case "Treadmill (45 cf)":
+            item_name = "treadmill";
+            break;
+          case "Computer monitor (5 cf)":
+            item_name = "cpu mon";
+            break;
+          case "Printer (5 cf)":
+            item_name = "prntr";
+            break;
+          case "Wall mirror (5 cf)":
+            item_name = "wall mirr";
+            break;
+          case "Vacuum cleaner (5 cf)":
+            item_name = "vac";
+            break;
+          case "Ironing board (3 cf)":
+            item_name = "irn bd";
+            break;
+          case "Guitar/Instrument (5 cf)":
+            item_name = "instrmt";
+            break;
+          case "Amp (3 cf)":
+            item_name = "amp";
+            break;
+          case "2' tall speaker (8 cf)":
+            item_name = "spkr";
+            break;
+          case "Small boxes (~1.5 cubic feet) (1.5 cf)":
+            item_name = "sm box";
+            break;
+          case "Medium boxes (~3.5 cubic feet) (3.5 cf)":
+            item_name = "med box";
+            break;
+          case "Large boxes (~5 cubic feet) (5 cf)":
+            item_name = "lg box";
+            break;
+          case "XL boxes (~8 cubic feet) (8 cf)":
+            item_name = "xl box";
+            break;
+          case "Wardrobe box (15.5 cf)":
+            item_name = "wrdrb box";
+            break;
+          case "Carry-on Suitcases (3 cf)":
+            item_name = "sm suitcs";
+            break;
+          case "Large Suitcases (5 cf)":
+            item_name = "lg suitcs";
+            break;
+          case "Small bags: totes, etc. (1 cf)":
+            item_name = "sm bg";
+            break;
+          case "Equipment bags: golf clubs, etc. (8 cf)":
+            item_name = "equip bg";
+            break;
+          default:
+            item_name = "";
+        }
+        // if quantity is more than 1, print the quantity before item name
+        if (matches[i].qty > 1) {
+          inventory += parseInt(matches[i].qty, 10) + " " + item_name + ", ";
+          // if this is the last item on the inventory list (equip bg), break our of the loop to avoid double submits in the e-mail chain
+          if (item_name == "equip bg")
+            break;
+        }
+        // if quantity equals 1, do not print it
+        else {
+          inventory += item_name + ", ";
+          // if this is the last item on the inventory list (equip bg), break our of the loop to avoid double submits in the e-mail chain
+          if (item_name == "equip bg")
+            break;
+        }
+      }
+      // if qty < 0 and the item is Equipment bags (the last on the list), break out of the for loop
+      else if (matches[i].item_name == "Equipment bags: golf clubs, etc. (8 cf)") {
+
+        // remove the last ", " from the inventory list as these are not needed
+        inventory = inventory.substring(0, inventory.length-2);
+
+        break;
+      }
+    }
+
+    // Check if the client checked off COI
+    regex = /COI needed\?\:\s+(\w+)/g;
+
+    str.replace(regex, function(match, coi) {
+      // if COI was checked off by the client, add a note to the result string
+      if (coi == "Checked")
+        inventory += "<br>" + "*COI*";
+    });
+
+    // Check if the client checked off disassembly
+    regex = /Disassembly needed\?\:\s+(\w+)/g;
+
+    str.replace(regex, function(match, DA) {
+      // if disassembly was checked off by the client, add a note to the result string
+      if (DA == "Checked")
+        inventory += "<br>" + "*DA*";
+    });
+
+    // Check if the client checked off mattress bag
+    regex = /(.*) — (mattress bags)/g;
+
+    str.replace(regex, function(match, matt_bg) {
+      // if mattresss bag was checked off by the client, add a note to the result string
+      if (matt_bg == "Checked")
+        inventory += "<br>" + "*MATT BG*";
+    });
+
+    // Check if the CSR added notes about extra inventory
+    regex = /(\+\+.*)/g;
+
+    str.replace(regex, function(match, extra_inv) {
+      // if extra inventory was noted by CSR, add them to the result string
+      if (extra_inv)
+        inventory += "<br>" + extra_inv;
+    });
+
+    // Check if the CSR added notes about inventory reductions
+    regex = /\n(\-\- .*)/g;
+
+    str.replace(regex, function(match, extra_inv) {
+      // if inventory reductions were noted by CSR, add them to the result string
+      if (extra_inv)
+        inventory += "<br>" + extra_inv;
+    });
+
+    // Check if the CSR added notes about inventory reductions (pre-fixed with an en-dash - case for iOS devices)
+    regex = /\n(\— .*)/g;
+
+    str.replace(regex, function(match, extra_inv) {
+      // if inventory reductions were noted by CSR, add them to the result string
+      if (extra_inv)
+        inventory += "<br>" + extra_inv;
+    });
+
+    // Check if the CSR added notes about extras
+    regex = /\n(\+\s.*)/g;
+
+    str.replace(regex, function(match, extras) {
+      // if extras were noted by CSR, add them to the result string
+      if (extras)
+        inventory += "<br>" + extras;
+    });
+
+    // Check if the CSR added notes about substitutions
+    regex = /(SUB:.*)/g;
+
+    str.replace(regex, function(match, subs) {
+      // if substitutions were noted by CSR, add them to the result string
+      if (subs)
+        inventory += "<br>" + subs;
+    });
+
+    // Check if the CSR added notes about curbing
+    regex = /(CURB:.*)/g;
+
+    str.replace(regex, function(match, curb) {
+      // if extras were noted by CSR, add them to the result string
+      if (curb)
+        inventory += "<br>" + curb;
+    });
+
+    document.getElementById("result").innerHTML = inventory;
+
+    console.log(inventory);
+  }
+
+
+  //  ****** function to erase content in both forms ******
+  function refresh_page() {
+    document.getElementById("input").value = "";
+    document.getElementById("result").innerHTML = '<span id="resultPlaceholder">Magic!!!</span>';
+  }
+
+
+  //  ****** Legible Inventory Function ******
+  function myInventory() {
+    var str = document.getElementById("input").value;
+    var inventory = "";
+
+    // extract cubic feet
+    regex = /Cubic feet:\s+(\d+.\d\d)/g;
+
+    str.replace(regex, function(match, cf) {
+      // add cf to the result string (round to the nearest 5, remove decimals).
+      inventory += "<b><u>INVENTORY (" + Math.round((cf%5<3 ? (cf%5===0 ? cf : Math.floor(cf/5)*5) : Math.ceil(cf/5)*5)) + " cubic ft):</b></u><br><br>";
+    });
+
+    // A RegExp object to find the number of items and item description
+    regex = /([0-9]*)\s--------\s(.*)/g;
+    var matches = [];
+
+    /* Look through the entire document and, based on the regex pattern matches,
+    create and add objects (each with 2 attributes: quantity and item name) to array "matches".*/
+    str.replace(regex, function(match, qty, item_name) {
+      matches.push({
+        qty: qty,
+        item_name: item_name
+      });
+    });
+
+    // replace each item name in the array "matches" with abbreviations that will be used in texts for crews
+    for (var i=0; i < matches.length; i++) {
+      var item_name = "";
+
+      if (matches[i].qty > 0) {
+        switch(matches[i].item_name) {
+          case "Twin Mattresses (20 cf)":
+            item_name = "Twin Mattress";
+            break;
+          case "Twin Box Springs (20 cf)":
+            item_name = "Twin Box Spring";
+            break;
+          case "Full Mattresses (25 cf)":
+            item_name = "Full Mattress";
+            break;
+          case "Full Box Springs (25 cf)":
+            item_name = "Full Box Spring";
+            break;
+          case "Queen Mattresses (30 cf)":
+            item_name = "Queen Mattress";
+            break;
+          case "Queen Box Springs (30 cf)":
+            item_name = "Queen Box Spring";
+            break;
+          case "King Mattresses (35 cf)":
+            item_name = "King Mattress";
+            break;
+          case "King Box Springs (35 cf)":
+            item_name = "King Box Spring";
+            break;
+          case "Folding metal frames (10 per)":
+            item_name = "Folding metal frame";
+            break;
+          case "Folding frames with headboards (30 cf)":
+            item_name = "Folding frames with headboard";
+            break;
+          case "Full bedframe (no storage drawers) (30 per)":
+            item_name = "Full bedframe (no storage drawers)";
+            break;
+          case "Storage Bedframes (40 per)":
+            item_name = "Storage Bedframe";
+            break;
+          case "Nightstand (5 cf)":
+            item_name = "Nightstand";
+            break;
+          case "Medium dresser (3'x5') (30 cf)":
+            item_name = "Medium dresser (3'x5')";
+            break;
+          case "Large dresser (6'x4') (45 cf)":
+            item_name = "Large dresser (6'x4')";
+            break;
+          case "Large dresser with mirror (5’x4’) (45 cf)":
+            item_name = "Large dresser with mirror (5’x4’)";
+            break;
+          case "Armoire/ Wardrobe (3'x6') (40 cf)":
+            item_name = "Armoire (3'x6')";
+            break;
+          case "Armoire/ Wardrobe (5'x7') (60 cf)":
+            item_name = "Armoire (5'x7')";
+            break;
+          case "Trunk (10 cf)":
+            item_name = "Trunk";
+            break;
+          case "Vanity (15 cf)":
+            item_name = "Vanity";
+            break;
+          case "Crib (15 cf)":
+            item_name = "Crib";
+            break;
+          case "Full length mirror (3'x6') (10 cf)":
+            item_name = "Full length mirror (3'x6')";
+            break;
+          case "Shoe racks (5 cf)":
+            item_name = "Shoe rack";
+            break;
+          case "Hamper (5 cf)":
+            item_name = "Hamper";
+            break;
+          case "Couch (3 seat) (60 cf)":
+            item_name = "Couch";
+            break;
+          case "Loveseat (2 seat) (35 cf)":
+            item_name = "Loveseat";
+            break;
+          case "Sleeper Sofa (with fold-out bed) (70 cf)":
+            item_name = "Sleeper Sofa";
+            break;
+          case "Sectional couch (80 cf)":
+            item_name = "Sectional couch";
+            break;
+          case "Sofa chair/ Recliner (25 cf)":
+            item_name = "Sofa chair";
+            break;
+          case "Ottoman (2'x2') (10 cf)":
+            item_name = "Ottoman";
+            break;
+          case "Arm chair (12 cf)":
+            item_name = "Arm chair";
+            break;
+          case "Coffee table (10 cf)":
+            item_name = "Coffee table";
+            break;
+          case "Large Coffee table (20 cf)":
+            item_name = "Coffee table (Large)";
+            break;
+          case "Glass Coffee table (15 cf)":
+            item_name = "Coffee table (Glass)";
+            break;
+          case "Console table/ Side table (10 cf)":
+            item_name = "Console table";
+            break;
+          case "End table (1'x2') (5 cf)":
+            item_name = "End table";
+            break;
+          case "End table (2'x3') (10 cf)":
+            item_name = "End table (2'x3')";
+            break;
+          case "TV stand (10 cf)":
+            item_name = "TV stand";
+            break;
+          case "Glass TV stand (20 cf)":
+            item_name = "TV stand (Glass)";
+            break;
+          case "TV Console/Credenza (30 cf)":
+            item_name = "TV Console/Credenza";
+            break;
+          case "Entertainment Center (5'x5') (80 cf)":
+            item_name = "Entertainment Center (5'x5')";
+            break;
+          case '< 44" Flatscreen TV (10 cf)':
+            item_name = '< 44" Flatscreen TV';
+            break;
+          case '44"+ Flatscreen TV (20 cf)':
+            item_name = '44"+ Flatscreen TV';
+            break;
+          case "Bookcase (3'x3') (10 cf)":
+            item_name = "Bookcase (3'x3')";
+            break;
+          case "Bookcase (3'x6') (20 cf)":
+            item_name = "Bookcase (3'x6')";
+            break;
+          case "XL bookcase (40 cf)":
+            item_name = "XL bookcase";
+            break;
+          case "Writing desk (15 cf)":
+            item_name = "Writing desk";
+            break;
+          case "Large desk (5'x3') (25 cf)":
+            item_name = "Large desk (5'x3')";
+            break;
+          case "Office chair (15 cf)":
+            item_name = "Office chair";
+            break;
+          case "Dining table (2-4 seat) (25 cf)":
+            item_name = "Dining table (2-4 seat)";
+            break;
+          case "Dining table (6-8 seat) (40 cf)":
+            item_name = "Dining table (6-8 seat)";
+            break;
+          case "Dining chair (6 cf)":
+            item_name = "Dining chair";
+            break;
+          case "Stool (3 cf)":
+            item_name = "Stool";
+            break;
+          case "Buffet/Side board (35 cf)":
+            item_name = "Buffet";
+            break;
+          case "China cabinet (3'x5') (40 cf)":
+            item_name = "China cabinet (3'x5')";
+            break;
+          case "Small Pictures/Paintings (1'x1') (1 cf)":
+            item_name = "Small Picture";
+            break;
+          case "Medium Pictures/Paintings (2'x3') (3 cf)":
+            item_name = "Medium Picture";
+            break;
+          case "Large Pictures/Paintings (3'x4'+) (5 cf)":
+            item_name = "Large Picture";
+            break;
+          case "Floor lamp (10 cf)":
+            item_name = "Floor lamp";
+            break;
+          case "Large floor lamp (15 cf)":
+            item_name = "Floor lamp (Large)";
+            break;
+          case "Table lamp (5 cf)":
+            item_name = "Table lamp";
+            break;
+          case "Rug (4' long) (5 cf)":
+            item_name = "Rug (4' long)";
+            break;
+          case "Rug (7' long) (10 cf)":
+            item_name = "Rug (7' long)";
+            break;
+          case "Refrigerator (50 cf)":
+            item_name = "Refrigerator";
+            break;
+          case "Wine or mini fridge (10 cf)":
+            item_name = "Mini fridge";
+            break;
+          case "Stove (30 cf)":
+            item_name = "Stove";
+            break;
+          case "Wire Shelving unit (2' x 5') (20 cf)":
+            item_name = "Wire Shelving unit (2'x5')";
+            break;
+          case "Wire Shelving unit (4' x 5') (30 cf)":
+            item_name = "Wire Shelving unit (4'x5')";
+            break;
+          case "Kitchen cart / Butcher block (15 cf)":
+            item_name = "Kitchen cart";
+            break;
+          case "Bench (15 cf)":
+            item_name = "Bench";
+            break;
+          case "Standing/Box Fan (5 cf)":
+            item_name = "Fan";
+            break;
+          case "Window A.C. unit (8 cf)":
+            item_name = "A.C. unit";
+            break;
+          case "Bike (10 cf)":
+            item_name = "Bike";
+            break;
+          case "Potted plants (5 cf)":
+            item_name = "Potted plant";
+            break;
+          case "Large plants (15 cf)":
+            item_name = "Large plant";
+            break;
+          case "Outdoor table, seats 4 (25 cf)":
+            item_name = "Outdoor table (4 seats)";
+            break;
+          case "Folding table (8 cf)":
+            item_name = "Folding table";
+            break;
+          case "Single chair (5 cf)":
+            item_name = "Single chair";
+            break;
+          case "Folding chair (2 cf)":
+            item_name = "Folding chair";
+            break;
+          case "File cabinet (2 drawer) (5 cf)":
+            item_name = "File cabinet (2 drawer)";
+            break;
+          case "File cabinet (4 drawer) (10 cf)":
+            item_name = "File cabinet (4 drawer)";
+            break;
+          case "Plastic storage cabinet (7 cf)":
+            item_name = "Plastic storage cabinet";
+            break;
+          case "Wine rack (7 cf)":
+            item_name = "Wine rack";
+            break;
+          case "Coat rack (5 cf)":
+            item_name = "Coat rack";
+            break;
+          case "BBQ Grill (10 cf)":
+            item_name = "BBQ Grill (Small)";
+            break;
+          case "Treadmill (45 cf)":
+            item_name = "Treadmill";
+            break;
+          case "Computer monitor (5 cf)":
+            item_name = "Computer monitor";
+            break;
+          case "Printer (5 cf)":
+            item_name = "Printer";
+            break;
+          case "Wall mirror (5 cf)":
+            item_name = "Wall mirror";
+            break;
+          case "Vacuum cleaner (5 cf)":
+            item_name = "Vacuum";
+            break;
+          case "Ironing board (3 cf)":
+            item_name = "Ironing board";
+            break;
+          case "Guitar/Instrument (5 cf)":
+            item_name = "Instrument";
+            break;
+          case "Amp (3 cf)":
+            item_name = "Amp";
+            break;
+          case "2' tall speaker (8 cf)":
+            item_name = "Speaker (2' tall)";
+            break;
+          case "Small boxes (~1.5 cubic feet) (1.5 cf)":
+            item_name = "Small box (1 cubic foot)";
+            break;
+          case "Medium boxes (~3.5 cubic feet) (3.5 cf)":
+            item_name = "Medium box (3 cubic feet)";
+            break;
+          case "Large boxes (~5 cubic feet) (5 cf)":
+            item_name = "Large box (5 cubic feet)";
+            break;
+          case "XL boxes (~8 cubic feet) (8 cf)":
+            item_name = "XL box (8 cubic feet)";
+            break;
+          case "Wardrobe box (15.5 cf)":
+            item_name = "Wardrobe box";
+            break;
+          case "Carry-on Suitcases (3 cf)":
+            item_name = "Carry-on Suitcase";
+            break;
+          case "Large Suitcases (5 cf)":
+            item_name = "Large Suitcase";
+            break;
+          case "Small bags: totes, etc. (1 cf)":
+            item_name = "Small bag (1-2 cubic ft)";
+            break;
+          case "Equipment bags: golf clubs, etc. (8 cf)":
+            item_name = "Equipment bag (5-8 cubic ft)";
+            break;
+          default:
+            item_name = "";
+        }
+        // if quantity is more than 1, print the quantity before item name
+          inventory += parseInt(matches[i].qty, 10) + " x " + item_name + "<br>";
+          // if this is the last item on the inventory list (equip bg), break our of the loop to avoid double submits in the e-mail chain
+          if (item_name == "Equipment bags: golf clubs, etc.")
+            break;
+      }
+      // if qty < 0 and the item is Equipment bags (the last on the list), break out of the for loop
+      else if (matches[i].item_name == "Equipment bags: golf clubs, etc. (8 cf)") {
+        break;
+      }
+    }
+
+    // Check if the CSR added notes about extra inventory
+    regex = /(\+\+.*)/g;
+
+    str.replace(regex, function(match, extra_inv) {
+      // if extra inventory was noted by CSR, add them to the result string
+      if (extra_inv)
+        inventory += "<br>" + extra_inv;
+    });
+
+    // Check if the CSR added notes about inventory reductions
+    regex = /\n(\-\- .*)/g;
+
+    str.replace(regex, function(match, extra_inv) {
+      // if inventory reductions were noted by CSR, add them to the result string
+      if (extra_inv)
+        inventory += "<br>" + extra_inv;
+    });
+
+    // Check if the CSR added notes about extras
+    regex = /\n(\+\s.*)/g;
+
+    str.replace(regex, function(match, extras) {
+      // if extras were noted by CSR, add them to the result string
+      if (extras)
+        inventory += "<br>" + extras;
+    });
+
+    // Check if the CSR added notes about substitutions
+    regex = /(SUB:.*)/g;
+
+    str.replace(regex, function(match, subs) {
+      // if substitutions were noted by CSR, add them to the result string
+      if (subs)
+        inventory += "<br>" + subs;
+    });
+
+    // Check if the CSR added notes about curbing
+    regex = /(CURB:.*)/g;
+
+    str.replace(regex, function(match, curb) {
+      // if extras were noted by CSR, add them to the result string
+      if (curb)
+        inventory += "<br>" + curb;
+    });
+
+    document.getElementById("result").innerHTML = inventory;
+
+    console.log(inventory);
+  }
+
+  //  ****** Legible Inventory Function ******
+  function asftList (){
+    var str = document.getElementById("input").value;
+    var abbreviatedListString = "";
+    var itemArray = [];
+    var bedroomArray = ["<br><br><b>Bedroom:</b><br>"];
+    var livingRoomArray = ["<br><b>Living/Dining Room:</b><br>"];
+    var kitchenArray = ["<br><b>Kitchen and Misc:</b><br>"];
+    var boxArray = ["<br><b>Boxes, etc:</b><br>"];
+    var customArray = ["<br><b>Custom Items:</b><br>"];
+    var resultString = "Hi __, <br><br>" +
+    " Just checking in for your upcoming move! Please review your inventory below and reply *only* with the items being added or subtracted from this list. For example:<br><br>" +
+    "ADD: <br>" +
+    "<ul><li>3 med boxes</li><li>8 med duffel/garbage bag</li><li>Bakers rack 6’ x 3’</li></ul><br>" +
+    "SUBTRACT:<br>" +
+    "<ul><li>2 floor lamps</li><li>3 med pics</li></ul><br>" +
+    "For any items not on our list please include dimensions and a picture or link if available. Additional items are generally $5 per medium box or equivalent. We require inventory changes 48 hrs in advance for an adjusted quote. Please also review our policy document in the original quote email which should be at the bottom of this thread. Thanks so much and happy packing!! 📦🤗<br><br>" +
+    "(Name)<br><br>" +
+    "<b><u>INVENTORY (";
+    var cubicFt = "";
+    var cfRegex = /(\d+)cf:/g;
+    var abbrListRegex = /cf:\s+(.*)/g;
+    var abbrItemRegex = /(\d+\s)?([^\sDA].+?)(,|$)/g;
+
+    str.replace(cfRegex, function(match, cf) {
+      // extract somma delimeted list and add save it as a string
+        cubicFt = cf;
+        resultString += cf + " cubic ft):</b></u>";
+    });
+
+    str.replace(abbrListRegex, function(match, inventory) {
+      // extract somma delimeted list and add save it as a string
+        abbreviatedListString = inventory;
+    });
+
+    // Create a two-dimensional array with first column containing quantity and
+    // and second column - abbreviated item name
+    abbreviatedListString.replace(abbrItemRegex, function($0, qty, name) {
+      itemArray.push([parseInt(qty), name = name.trim()]);
+    })
+
+    for (var i=0; i < itemArray.length; i++) {
+      // if item quantity is Not-A-Number (NULL), replace with 1
+      if (isNaN(itemArray[i][0])) {
+        itemArray[i][0] = 1;
+      }
+      // if an item has ' DA' added to its name - marking disassembly included,
+      // remove the note
+      switch(itemArray[i][1].replace(' DA', '')) {
+        case "twin matt":
+          itemArray[i][1] = "Twin Mattress";
+          bedroomArray.push(itemArray[i]);
+          console.log(bedroomArray);
+          break;
+        case "twin box":
+          itemArray[i][1] = "Twin Box Spring";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "full matt":
+          itemArray[i][1] = "Full Mattress";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "full box":
+          itemArray[i][1] = "Full Box Spring";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "queen matt":
+          itemArray[i][1] = "Queen Mattress";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "queen box":
+          itemArray[i][1] = "Queen Box Spring";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "king matt":
+          itemArray[i][1] = "King Mattress";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "king box":
+          itemArray[i][1] = "King Box Spring";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "fld frm":
+          itemArray[i][1] = "Folding metal frame";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "fld frm w hdbd":
+          itemArray[i][1] = "Folding frames with headboard";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "full frm":
+          itemArray[i][1] = "Full bedframe (no storage drawers)";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "storage frm":
+          itemArray[i][1] = "Storage Bedframe";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "ntstd":
+          itemArray[i][1] = "Nightstand";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "med drsr":
+          itemArray[i][1] = "Medium dresser (3'x5')";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "lg drsr":
+          itemArray[i][1] = "Large dresser (6'x4')";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "lg drsr w mirr":
+          itemArray[i][1] = "Large dresser with mirror (5’x4’)";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "armoire 3x6":
+          itemArray[i][1] = "Armoire (3'x6')";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "armoire 5x7":
+          itemArray[i][1] = "Armoire (5'x7')";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "trunk":
+          itemArray[i][1] = "Trunk";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "vanity":
+          itemArray[i][1] = "Vanity";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "crib":
+          itemArray[i][1] = "Crib";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "full mirr":
+          itemArray[i][1] = "Full length mirror (3'x6')";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "shoe rk":
+          itemArray[i][1] = "Shoe rack";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "hmpr":
+          itemArray[i][1] = "Hamper";
+          bedroomArray.push(itemArray[i]);
+          break;
+        case "couch":
+          itemArray[i][1] = "Couch";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "loveseat":
+          itemArray[i][1] = "Loveseat";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "sleeper sofa":
+          itemArray[i][1] = "Sleeper Sofa";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "sectnl couch":
+          itemArray[i][1] = "Sectional couch";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "sofa chr":
+          itemArray[i][1] = "Sofa chair";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "ottomn":
+          itemArray[i][1] = "Ottoman";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "arm chr":
+          itemArray[i][1] = "Arm chair";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "coff tbl":
+          itemArray[i][1] = "Coffee table";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "lg coff tbl":
+          itemArray[i][1] = "Coffee table (Large)";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "gls coff tbl":
+          itemArray[i][1] = "Coffee table (Glass)";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "sd tbl":
+          itemArray[i][1] = "Console table";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "end tbl":
+          itemArray[i][1] = "End table";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "lg end tbl":
+          itemArray[i][1] = "End table (2'x3')";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "tv std":
+          itemArray[i][1] = "TV stand";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "gls tv std":
+          itemArray[i][1] = "TV stand (Glass)";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "tv console":
+          itemArray[i][1] = "TV Console/Credenza";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "ent ctr 5x5":
+          itemArray[i][1] = "Entertainment Center (5'x5')";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "tv":
+          itemArray[i][1] = '< 44" Flatscreen TV';
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "lg tv":
+          itemArray[i][1] = '44"+ Flatscreen TV';
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "sm bkcs":
+          itemArray[i][1] = "Bookcase (3'x3')";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "lg bkcs":
+          itemArray[i][1] = "Bookcase (3'x6')";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "xl bkcs":
+          itemArray[i][1] = "XL bookcase (5'x5')";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "sm desk":
+          itemArray[i][1] = "Writing desk";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "lg desk":
+          itemArray[i][1] = "Large desk (5'x3')";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "ofc chr":
+          itemArray[i][1] = "Office chair";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "din tbl":
+          itemArray[i][1] = "Dining table (2-4 seat)";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "lg din tbl":
+          itemArray[i][1] = "Dining table (6-8 seat)";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "din chr":
+          itemArray[i][1] = "Dining chair";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "stool":
+          itemArray[i][1] = "Stool";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "buffet":
+          itemArray[i][1] = "Buffet";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "china cab 3x5":
+          itemArray[i][1] = "China cabinet (3'x5')";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "sm pic":
+          itemArray[i][1] = "Small Picture";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "med pic":
+          itemArray[i][1] = "Medium Picture";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "lg pic":
+          itemArray[i][1] = "Large Picture";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "fl lmp":
+          itemArray[i][1] = "Floor lamp";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "lg fl lmp":
+          itemArray[i][1] = "Floor lamp (Large)";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "tbl lmp":
+          itemArray[i][1] = "Table lamp";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "rug":
+          itemArray[i][1] = "Rug (4' long)";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "lg rug":
+          itemArray[i][1] = "Rug (7' long)";
+          livingRoomArray.push(itemArray[i]);
+          break;
+        case "refrigerator":
+          itemArray[i][1] = "Refrigerator";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "mini fridge":
+          itemArray[i][1] = "Mini fridge";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "stove":
+          itemArray[i][1] = "Stove";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "wire shlvg 2x5":
+          itemArray[i][1] = "Wire Shelving unit (2'x5')";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "wire shlvg 4x5":
+          itemArray[i][1] = "Wire Shelving unit (4'x5')";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "kitch cart":
+          itemArray[i][1] = "Kitchen cart";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "bench":
+          itemArray[i][1] = "Bench";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "fan":
+          itemArray[i][1] = "Fan";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "ac":
+          itemArray[i][1] = "A.C. unit";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "bike":
+          itemArray[i][1] = "Bike";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "plnt":
+          itemArray[i][1] = "Potted plant"
+          kitchenArray.push(itemArray[i]);;
+          break;
+        case "lg plnt":
+          itemArray[i][1] = "Large plant";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "outdr tbl":
+          itemArray[i][1] = "Outdoor table (4 seats)";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "fld tbl":
+          itemArray[i][1] = "Folding table";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "chr":
+          itemArray[i][1] = "Single chair";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "fld chr":
+          itemArray[i][1] = "Folding chair";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "file cab":
+          itemArray[i][1] = "File cabinet (2 drawer)";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "lg file cab":
+          itemArray[i][1] = "File cabinet (4 drawer)";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "plstc cab":
+          itemArray[i][1] = "Plastic storage cabinet";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "wine rk":
+          itemArray[i][1] = "Wine rack";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "coat rk":
+          itemArray[i][1] = "Coat rack";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "grill":
+          itemArray[i][1] = "BBQ Grill (Small)";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "treadmill":
+          itemArray[i][1] = "Treadmill";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "cpu mon":
+          itemArray[i][1] = "Computer monitor";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "prntr":
+          itemArray[i][1] = "Printer";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "wall mirr":
+          itemArray[i][1] = "Wall mirror";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "vac":
+          itemArray[i][1] = "Vacuum";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "irn bd":
+          itemArray[i][1] = "Ironing board";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "instrmt":
+          itemArray[i][1] = "Instrument";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "amp":
+          itemArray[i][1] = "Amp";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "spkr":
+          itemArray[i][1] = "Speaker (2' tall)";
+          kitchenArray.push(itemArray[i]);
+          break;
+        case "sm box":
+          itemArray[i][1] = "Small box (1 cubic foot)";
+          boxArray.push(itemArray[i]);
+          break;
+        case "med box":
+          itemArray[i][1] = "Medium box (3 cubic feet)";
+          boxArray.push(itemArray[i]);
+          break;
+        case "lg box":
+          itemArray[i][1] = "Large box (5 cubic feet)";
+          boxArray.push(itemArray[i]);
+          break;
+        case "xl box":
+          itemArray[i][1] = "XL box (8 cubic feet)";
+          boxArray.push(itemArray[i]);
+          break;
+        case "wrdrb box":
+          itemArray[i][1] = "Wardrobe box";
+          boxArray.push(itemArray[i]);
+          break;
+        case "sm suitcs":
+          itemArray[i][1] = "Carry-on Suitcase";
+          boxArray.push(itemArray[i]);
+          break;
+        case "lg suitcs":
+          itemArray[i][1] = "Large Suitcase";
+          boxArray.push(itemArray[i]);
+          break;
+        case "sm bg":
+          itemArray[i][1] = "Small bag (1-2 cubic ft)";
+          boxArray.push(itemArray[i]);
+          break;
+        case "equip bg":
+          itemArray[i][1] = "Equipment bag (5-8 cubic ft)";
+          boxArray.push(itemArray[i]);
+          break;
+        default:
+          customArray.push(itemArray[i]);
+          console.log('Custom item name, keep abbreviated form:' + itemArray[i][1]);
+      }
+
+    }
+
+    // create an array of Item arrays
+
+    var roomArray = [bedroomArray, livingRoomArray, kitchenArray, boxArray, customArray];
+
+    // Add room headers and room item lists to result string
+
+    for (var i=0; i < roomArray.length; i++) {
+        resultString += roomArray[i][0];
+      for (var j=1; j < roomArray[i].length; j++) {
+        resultString += roomArray[i][j][0] + " x " + roomArray[i][j][1] + "<br>";
+      }
+    }
+
+    document.getElementById("result").innerHTML = resultString;
+    console.log(roomArray);
+  }
+
+</script>
+</body>
+</html>

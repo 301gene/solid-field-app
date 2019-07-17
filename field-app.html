@@ -60,11 +60,11 @@
     var str = document.getElementById("input").value;
     var abbreviatedListString = "";
     var itemArray = [];
-    var bedroomArray = ["<br><br><b>Bedroom:</b><br>"];
-    var livingRoomArray = ["<br><b>Living/Dining Room:</b><br>"];
-    var kitchenArray = ["<br><b>Kitchen and Misc:</b><br>"];
-    var boxArray = ["<br><b>Boxes, etc:</b><br>"];
-    var customArray = ["<br><b>Custom Items:</b><br>"];
+    var bedroomArray = [];
+    var livingRoomArray = [];
+    var kitchenArray = [];
+    var boxArray = [];
+    var customArray = [];
     var resultString = "INVENTORY (";
     var cubicFt = "";
     var cfRegex = /(\d+)cf:/g;
@@ -74,7 +74,7 @@
     str.replace(cfRegex, function(match, cf) {
       // extract somma delimeted list and add save it as a string
         cubicFt = cf;
-        resultString += cf + " cubic ft):</b></u>";
+        resultString += cf + " cubic ft):</b><br><br></u>";
     });
 
     str.replace(abbrListRegex, function(match, inventory) {
@@ -523,8 +523,7 @@
     // Add room headers and room item lists to result string
 
     for (var i=0; i < roomArray.length; i++) {
-        resultString += roomArray[i][0];
-      for (var j=1; j < roomArray[i].length; j++) {
+      for (var j=0; j < roomArray[i].length; j++) {
         resultString += roomArray[i][j][0] + " x " + roomArray[i][j][1] + "<br>";
       }
     }
